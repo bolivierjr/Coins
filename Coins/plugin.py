@@ -43,6 +43,7 @@ class Coins(callbacks.Plugin):
             for coin in coins:
                 url = requests.get('https://api.coinbase.com/v2/prices/{0}-USD'
                                    '/spot'.format(coin))
+                url.raise_for_status()
                 res = url.json()
                 price = str(res.get('data').get('amount'))
                 symbol = res.get('data').get('base')
@@ -50,7 +51,15 @@ class Coins(callbacks.Plugin):
 
             irc.reply(' :: '.join(prices))
 
-        except KeyError:
+        except requests.exceptions.HTTPError as e:
+            err = str(e)
+            if err[:3] == '429':
+                irc.reply('Too many requests. Calm down!')
+            else:
+                irc.reply('Sorry, there seems to be a problem with the API - {0}'
+                          .format(str(err[:3])))
+
+        except AttributeError:
             irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
 
     coinbase = wrap(coinbase)
@@ -63,12 +72,21 @@ class Coins(callbacks.Plugin):
         try:
             url = requests.get('https://api.coinbase.com/v2/'
                                'prices/ETH-USD/spot')
+            url.raise_for_status()
             res = url.json()
             price = str(res.get('data').get('amount'))
             irc.reply('1 ETH (Ethereum) :: {0} USD'.format(price))
 
-        except KeyError:
-            irc.replay('Error: Please tell eck0 to MAEK FEEKS!')
+        except requests.exceptions.HTTPError as e:
+            err = str(e)
+            if err[:3] == '429':
+                irc.reply('Too many requests. Calm down!')
+            else:
+                irc.reply('Sorry, there seems to be a problem with the API - {0}'
+                          .format(err[:3]))
+
+        except AttributeError:
+            irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
 
     eth = wrap(eth)
 
@@ -80,12 +98,25 @@ class Coins(callbacks.Plugin):
         try:
             url = requests.get('https://api.coinbase.com/v2/'
                                'prices/BTC-USD/spot')
+            url.raise_for_status()
             res = url.json()
             price = str(res.get('data').get('amount'))
             irc.reply('1 BTC (Bitcoin) :: {0} USD'.format(price))
 
-        except KeyError:
+        except requests.exceptions.HTTPError as e:
+            err = str(e)
+            if err[:3] == '429':
+                irc.reply('Too many requests. Calm down!')
+            else:
+                irc.reply('Sorry, there seems to be a problem with the API - {0}'
+                          .format(err[:3]))
+
+        except AttributeError:
             irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
+
+        except ValueError as e:
+            irc.reply(e)
+
     btc = wrap(btc)
 
     def ltc(self, irc, msg, args):
@@ -96,12 +127,24 @@ class Coins(callbacks.Plugin):
         try:
             url = requests.get('https://api.coinbase.com/v2/'
                                'prices/LTC-USD/spot')
+            url.raise_for_status()
             res = url.json()
             price = str(res.get('data').get('amount'))
             irc.reply('1 LTC (Litecoin) :: {0} USD'.format(price))
 
-        except KeyError:
+        except requests.exceptions.HTTPError as e:
+            err = str(e)
+            if err[:3] == '429':
+                irc.reply('Too many requests. Calm down!')
+            else:
+                irc.reply('Sorry, there seems to be a problem with the API - {0}'
+                          .format(err[:3]))
+
+        except AttributeError:
             irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
+
+        except ValueError as e:
+            irc.reply(e)
 
     ltc = wrap(ltc)
 
@@ -113,6 +156,7 @@ class Coins(callbacks.Plugin):
         try:
             url = requests.get('https://api.coinmarketcap.com/v1/'
                                'ticker/zcash')
+            url.raise_for_status()
             response = url.json()
             res = response[0]
             symbol = res.get('symbol')
@@ -122,8 +166,19 @@ class Coins(callbacks.Plugin):
             irc.reply('1 {0} ({1}) :: {2} USD'.format(symbol, name,
                       '{0:.2f}'.format(price)))
 
-        except KeyError:
+        except requests.exceptions.HTTPError as e:
+            err = str(e)
+            if err[:3] == '429':
+                irc.reply('Too many requests. Calm down!')
+            else:
+                irc.reply('Sorry, there seems to be a problem with the API - {0}'
+                          .format(err[:3]))
+
+        except TypeError:
             irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
+
+        except ValueError as e:
+            irc.reply(e)
 
     zec = wrap(zec)
 
@@ -136,6 +191,7 @@ class Coins(callbacks.Plugin):
             url = requests.get('https://api.coinmarketcap.com/v1/'
                                'ticker/siacoin')
             response = url.json()
+            url.raise_for_status()
             res = response[0]
             symbol = res.get('symbol')
             name = res.get('name')
@@ -144,8 +200,19 @@ class Coins(callbacks.Plugin):
             irc.reply('1000 {0} ({1}) :: {2} USD'
                       .format(symbol, name, '{0:.2f}'.format(price)))
 
-        except KeyError:
+        except requests.exceptions.HTTPError as e:
+            err = str(e)
+            if err[:3] == '429':
+                irc.reply('Too many requests. Calm down!')
+            else:
+                irc.reply('Sorry, there seems to be a problem with the API - {0}'
+                          .format(err[:3]))
+
+        except TypeError:
             irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
+
+        except ValueError as e:
+            irc.reply(e)
 
     sc = wrap(sc)
 
@@ -155,6 +222,7 @@ class Coins(callbacks.Plugin):
         """
         try:
             url = requests.get('https://api.coinmarketcap.com/v1/ticker')
+            url.raise_for_status()
             response = url.json()
 
             for res in response:
@@ -174,7 +242,7 @@ class Coins(callbacks.Plugin):
                                   '{0:.3f}'.format(price)))
                         break
                     elif price >= 1:
-                        # Rounds 2 decimal places for everything else 
+                        # Rounds 2 decimal places for everything else
                         irc.reply('1 {0} ({1}) :: {2} USD'.format(symbol, name,
                                   '{0:.2f}'.format(price)))
                         break
@@ -182,8 +250,19 @@ class Coins(callbacks.Plugin):
                 irc.reply('Can\'t find {0} in the API, sorry.'
                           .format(text.upper()))
 
-        except KeyError:
+        except requests.exceptions.HTTPError as e:
+            err = str(e)
+            if err[:3] == '429':
+                irc.reply('Too many requests. Calm down!')
+            else:
+                irc.reply('Sorry, there seems to be a problem with the API - {0}'
+                          .format(err[:3]))
+
+        except TypeError:
             irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
+
+        except ValueError as e:
+            irc.reply(e)
 
     coin = wrap(coin, ['text'])
 
