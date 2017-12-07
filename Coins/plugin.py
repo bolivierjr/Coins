@@ -159,30 +159,42 @@ class Coins(callbacks.Plugin):
             url = requests.get('https://api.coinmarketcap.com/v1/ticker')
             response = url.json()
 
-            for res in response:
-                # Takes the string from repsonse and converts to a float and
-                # rounds off two decimal places and converts it back to a
-                # string if above a dollar
-                price = str(round(float(res['price_usd']), 2))
-                symbol = res['symbol']
-                name = res['name']
+            def test():
+                for res in response:
+                    price = res['price_usd']
+                    symbol = res['symbol']
+                    name = res['name']
+                    # Takes the string from repsonse and converts to a float
+                    # and rounds off two decimal places and converts it back to
+                    # a string if above a dollar
+                    roundedPrice = str(round(float(price), 2))
 
-                if res['symbol'] == text.upper():
-                    if float(res['price_usd']) < 0.01:
-                        # Rounds 4 decimal places if below $0.01
-                        price = str(round(float(res['price_usd']), 4))
-                        irc.reply('1 {0} ({1}) :: {2} USD'
-                                  .format(symbol, name, price))
-                        return
-                    elif float(res['price_usd']) < 1:
-                        # Rounds 3 decimal places if below $1.00
-                        price = str(round(float(res['price_usd']), 3))
-                        irc.reply('1 {0} ({1}) :: {2} USD'
-                                  .format(symbol, name, price))
-                        return
+                    if res['symbol'] == text.upper():
+                        if float(price) < 0.01:
+                            # Rounds 4 decimal places if below $0.01
+                            roundedPrice = str(round(float(price), 4))
+                            irc.reply('1 {0} ({1}) :: {2} USD'
+                                      .format(symbol, name, roundedPrice))
+                            return False
+                        elif float(price) < 1:
+                            # Rounds 3 decimal places if below $1.00
+                            roundedPrice = str(round(float(price), 3))
+                            irc.reply('1 {0} ({1}) :: {2} USD'
+                                      .format(symbol, name, roundedPrice))
+                            return False
+                        elif float(price) >= 1:
+                            irc.reply('1 {0} ({1}) :: {2} USD'
+                                      .format(symbol, name, roundedPrice))
+                            return False
 
-                    irc.reply('1 {0} ({1}) :: {2} USD'
-                              .format(symbol, name, price))
+                return True
+
+            if test() is False:
+                return
+            else:
+                irc.reply('Can\'t find {0} in the API, sorry.'
+                          .format(text.upper()))
+
         except KeyError:
             irc.reply('Error: Please tell eck0 to MAEK FEEKS!')
 
