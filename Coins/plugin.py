@@ -54,7 +54,7 @@ class Coins(callbacks.Plugin):
 
         except requests.exceptions.HTTPError as e:
             err = str(e)
-            if err[:3] == '429':
+            if err.startswith('429'):
                 irc.reply(message.get('tooManyErr'))
             else:
                 irc.reply(message.get('httpErr').format(str(err[:3])))
@@ -80,7 +80,7 @@ class Coins(callbacks.Plugin):
 
         except requests.exceptions.HTTPError as e:
             err = str(e)
-            if err[:3] == '429':
+            if err.startswith('429'):
                 irc.reply(message.get('tooManyErr'))
             else:
                 irc.reply(message.get('httpErr').format(err[:3]))
@@ -106,7 +106,7 @@ class Coins(callbacks.Plugin):
 
         except requests.exceptions.HTTPError as e:
             err = str(e)
-            if err[:3] == '429':
+            if err.startswith('429'):
                 irc.reply(message.get('tooManyErr'))
             else:
                 irc.reply(message.get('httpErr').format(err[:3]))
@@ -135,7 +135,7 @@ class Coins(callbacks.Plugin):
 
         except requests.exceptions.HTTPError as e:
             err = str(e)
-            if err[:3] == '429':
+            if err.startswith('429'):
                 irc.reply(message.get('tooManyErr'))
             else:
                 irc.reply(message.get('httpErr').format(err[:3]))
@@ -169,7 +169,7 @@ class Coins(callbacks.Plugin):
 
         except requests.exceptions.HTTPError as e:
             err = str(e)
-            if err[:3] == '429':
+            if err.startswith('429'):
                 irc.reply(message.get('tooManyErr'))
             else:
                 irc.reply(message.get('httpErr').format(err[:3]))
@@ -204,7 +204,7 @@ class Coins(callbacks.Plugin):
         except requests.exceptions.HTTPError as e:
             err = str(e)
 
-            if err[:3] == '429':
+            if err.startswith('429'):
                 irc.reply(message.get('tooManyErr'))
             else:
                 irc.reply(message.get('httpErr').format(err[:3]))
@@ -253,7 +253,7 @@ class Coins(callbacks.Plugin):
 
         except requests.exceptions.HTTPError as e:
             err = str(e)
-            if err[:3] == '429':
+            if err.startswith('429'):
                 irc.reply(message.get('tooManyErr'))
             else:
                 irc.reply(message.get('httpErr').format(err[:3]))
