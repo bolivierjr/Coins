@@ -38,6 +38,14 @@ class Coins(callbacks.Plugin):
         """takes no arguments
         Returns the pricing for BTC, ETH, & LTC coins.
         """
+        irc.reply('try .cb instead')
+    coinbase = commands.wrap(coinbase)
+
+
+    def cb(self, irc, msg, args):
+        """takes no arguments
+        Returns the pricing for BTC, ETH, & LTC coins.
+        """
         coins = ['BTC', 'ETH', 'LTC']
         prices = []
         message = Coins.messages
@@ -62,7 +70,7 @@ class Coins(callbacks.Plugin):
         except AttributeError:
             irc.reply(message.get('error'))
 
-    coinbase = commands.wrap(coinbase)
+    cb = commands.wrap(cb)
 
     def eth(self, irc, msg, args):
         """takes no arguments
@@ -225,7 +233,7 @@ class Coins(callbacks.Plugin):
         message = Coins.messages
 
         try:
-            url = requests.get('https://api.coinmarketcap.com/v1/ticker')
+            url = requests.get('https://api.coinmarketcap.com/v1/ticker?limit=1000')
             url.raise_for_status()
             response = url.json()
 
