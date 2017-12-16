@@ -1,2 +1,5 @@
-/*
-!Coins/*
+env/
+
+!local/*.py
+
+*.py[cod]
