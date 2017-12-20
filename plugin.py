@@ -233,11 +233,15 @@ class Coins(callbacks.Plugin):
         message = Coins.messages
 
         try:
-            url = requests.get('https://api.coinmarketcap.com/v1/ticker?limit=1000')
+            url = requests.get('https://api.coinmarketcap.com/v1/ticker?limit=0')
             url.raise_for_status()
             response = url.json()
 
             for res in response:
+                if res.get('price_usd') is None:
+                    print('fuck')
+                    continue
+
                 price = float(res.get('price_usd'))
                 symbol = res.get('symbol')
                 name = res.get('name')
@@ -266,8 +270,9 @@ class Coins(callbacks.Plugin):
             else:
                 irc.reply(message.get('httpErr').format(err[:3]))
 
-        except TypeError:
+        except TypeError as e:
             irc.reply(message.get('error'))
+            print(e)
 
         except ValueError as e:
             irc.reply(e)
